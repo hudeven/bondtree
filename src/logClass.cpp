@@ -33,8 +33,8 @@ bool logClass::log2File(string infoStr , string fileName)
 
 bool logClass::log2File(float infoFloat , string fileName)
 {
-		//return 1;
-		if(!logFlag)
+	//return 1;
+	if(!logFlag)
 		return true;
 
 	ofstream fout;

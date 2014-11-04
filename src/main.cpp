@@ -187,7 +187,6 @@ logO.log2File("----------");logO.log2File(i);logO.log2File("\n");
 //this one only reads data file up to the give number of data points 
 void batchBuild_with_duplicate(long  size)
 {
-    logO.clearLogs();
     duplicateDataPoints=0;
     ND_tree ndt;
     Leaf_entry new_data/*, query_data, db_data*/;
@@ -261,11 +260,8 @@ typeid_file.close();
 //Insert kmers with a link to the record(readid,annotation)
 void batchBuild_with_duplicate_record(long  size)
 {
-
-
     clear_record();
 
-    logO.clearLogs();
     duplicateDataPoints=0;
     ND_tree ndt;
     Leaf_entry new_data/*, query_data, db_data*/;
@@ -1041,7 +1037,6 @@ void display_help()
 
 
 
-
 #define OPT_TREEFILE "-idxfile"
 #define OPT_DSCDIM "-dscdim"
 #define OPT_LOADFILE "-load_file"
@@ -1076,6 +1071,9 @@ struct option longopts[] = {
 
 int main(int argc, char *argv[])
 {
+	//clear the log
+    	logO.clearLogs();
+
 	bool newTree = false;
 	int c;
     	while((c = getopt_long(argc, argv, "m:i:d:b:r:s:a:c:nh", longopts, NULL)) != -1){
@@ -1121,7 +1119,7 @@ int main(int argc, char *argv[])
 	}
 
 
-      //  logO.log2File(opt.datafile.insert(0, "Source data file : ").c_str());
+        logO.log2File("Source data file : ");
         if(newTree)
         {
         //    log0.log2File("Creatung a new file");
