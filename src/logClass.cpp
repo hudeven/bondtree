@@ -1,3 +1,4 @@
+
 #include "logClass.h"
 #include <iomanip>
 logClass::logClass(void)
@@ -143,3 +144,4 @@ void logClass::clearLogs(string fileName)
 
 	fout.close();
 }
+

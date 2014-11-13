@@ -91,10 +91,19 @@ const int try_all_dim_with_minUtil = 1;
 int readid_global;
 char typeid_global;
 
+char record_type[9999999][16]={'\0'};
+
+string globalRQFilename = "rangequeryAll.txt";
+string globalDataFilename = "../data/data_random";
+string globalIndexFilename = "ndTree.dat";
 string globalAuxFilename = "../data/aux";
 string globalRecordFilename = "../data/record";
 string globalBQFilename = "../data/box_query_random";
 
-char record_type[9999999][16]={'\0'};
+int debug_boxQ_leaf_accessed;
+int debug_boxQ_leaf_hit;
+int debug_boxQ_leaf_hit_peak;
+int debug_height;
 
+logClass logO;
 #endif

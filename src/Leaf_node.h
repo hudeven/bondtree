@@ -1,16 +1,21 @@
+#ifndef LEAF_NODE_H
+#define LEAF_NODE_H
+
 #include "logClass.h"
 #include "Node.h"
 #include "Leaf_entry.h"
 #include <algorithm>
 #include <iostream>
+#include "config.h"
+
 const int LEAF_NODE_OVERHEAD = 4; // int count
 
 //extern const int DIR_NODE_OVERHEAD;
 
-extern int debug_boxQ_leaf_accessed;
-extern int debug_boxQ_leaf_hit;
-extern int debug_boxQ_leaf_hit_peak;
-extern logClass logO;
+//extern int debug_boxQ_leaf_accessed;
+//extern int debug_boxQ_leaf_hit;
+//extern int debug_boxQ_leaf_hit_peak;
+//extern logClass logO;
 
 class Leaf_node:public Node {
 public:
@@ -2088,3 +2093,5 @@ void Leaf_node::print_OneEntry_OnOneDscDim(const Leaf_entry* const oneEntry,int 
 //}
 //
 //
+
+#endif

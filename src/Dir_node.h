@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include "logClass.h"
 #include "Dir_entry.h"
+#include "config.h"
 
 const int DIR_NODE_OVERHEAD = 4; // int count
-extern logClass logO;
-extern int debug_height;
+//extern logClass logO;
+//extern int debug_height;
 
 
 class Dir_node:public Node{

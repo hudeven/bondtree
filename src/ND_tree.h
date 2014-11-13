@@ -4,10 +4,11 @@
 #include "logClass.h"
 #include "Dir_node.h"
 #include <stack>
+#include "config.h"
 
 const int ND_FILE_NAME_LENGTH = 256; // Define the maximum length of the ND-tree file name
-extern logClass logO;
-extern int debug_height;
+//extern logClass logO;
+//extern int debug_height;
 /*
 DIM, DISK_BLOCK_SIZE and DMBR_SIZE need to be specified at the compilation time
    DIM: Number of dimensions
