@@ -1,6 +1,4 @@
 #include <getopt.h>
-
-#include "logClass.h"
 #include "ndtreehelper.h"
 
 struct option longopts[] = {
@@ -21,14 +19,13 @@ struct option longopts[] = {
 
 int main(int argc, char *argv[])
 {
-	//clear the log
-    	logO.clearLogs();
-
-ndtreeHelper ndtree;
-
+	ndtreeHelper ndtree;
+	
 	bool newTree = false;
 	int c;
-    	while((c = getopt_long(argc, argv, "m:i:d:b:r:s:a:c:nh", longopts, NULL)) != -1){
+    	while((c = getopt_long(argc, argv, 
+		"m:i:d:b:r:s:a:c:nh", longopts, NULL)) != -1){
+
 		switch (c){
 		case 'm':
 		    printf("dimension is: %s\n", optarg);
@@ -71,25 +68,20 @@ ndtreeHelper ndtree;
 	}
 
 
-        logO.log2File("Source data file : ");
         if(newTree)
         {
-        //    logO.log2File("Creatung a new file");
             cout<<"Creating a new index file"<<endl;
-            
 	    //original method, without link to data record
 	    //batchBuild_with_duplicate(opt.count);
             ndtree.batchBuild_with_duplicate_record(LONG_MAX);
         }
         else
         {
-        //    logO.log2File("Modifying existing file");
-            cout<<"Modifying an existing file "<<endl;
+            cout<<"Modifying an existing index file "<<endl;
 	    //figure it out later
 	    int skip = 10;
             ndtree.batchGrow_with_duplicate(skip, LONG_MAX);
         }
-        //logO.log2File(opt.datafile.insert(0, "Box query file : ").c_str());
         cout<<"Box query file "<<globalBQFilename<<endl;
         ndtree.batchRandomBoxQuery();
     

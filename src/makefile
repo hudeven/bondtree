@@ -1,14 +1,12 @@
 CC=g++
 CFLAGS=-g -c
-ndTree: main.o logClass.o utility.o ndtreeHelper.o
+ndTree: main.o logClass.o utility.o 
 	$(CC) -o ndTree main.o utility.o logClass.o 
-main.o: main.cpp logClass.h ndtreeHelper.h ndtreeHelper.cpp ndtreeHelper.h config.h Dir_entry.h Dir_node.h Leaf_entry.h Leaf_node.h logClass.h ND_tree.h Node.h utility.h
+main.o: main.cpp logClass.h ndtreeHelper.h ndtreeHelper.h config.h Dir_entry.h Dir_node.h Leaf_entry.h Leaf_node.h logClass.h ND_tree.h Node.h utility.h
 	$(CC) $(CFLAGS) main.cpp
 utility.o: utility.cpp utility.h
 	$(CC) $(CFLAGS) utility.cpp
 logClass.o: logClass.cpp logClass.h
 	$(CC) $(CFLAGS) logClass.cpp
-ndtreeHelper.o: ndtreeHelper.cpp ndtreeHelper.h config.h Dir_entry.h Dir_node.h Leaf_entry.h Leaf_node.h logClass.h ND_tree.h Node.h utility.h
-	$(CC) $(CFLAGS) ndtreeHelper.cpp
 clean:
 	rm -f *.o

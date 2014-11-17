@@ -2360,7 +2360,7 @@ vector<int> setOverlapFreeWithRests;
 		   if (setOverlapFreeWithRests.size()>0)
 		   {
 
-			   if((TREE_TYPE == DYNAMIC_TREE))
+			   if(TREE_TYPE == DYNAMIC_TREE)
 			   {
 
 				   int tmp_counter = 0;
@@ -2416,7 +2416,7 @@ vector<int> setOverlapFreeWithRests;
 	   //findTheOne is false, forceSplitonThisDim is true, and there are sets overlap free with others
 	   if ((findTheOne == false)&&(forceSplitonThisDim == true)&&(setOverlapFreeWithRests.size()>0))
 	   {//if there exists set overlap free with the rest, just pick the first set could compress
-		   if((TREE_TYPE == DYNAMIC_TREE))
+		   if(TREE_TYPE == DYNAMIC_TREE)
 		   {//DYNAMIC_TREE
 			   int tmp_counter=0;
 			   while(1)

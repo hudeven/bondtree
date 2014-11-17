@@ -8,6 +8,7 @@
 #include "logClass.h"
 #include <limits.h>
 #include "config.h"
+
 class ndtreeHelper {
 public:
 ofstream OutStream;
@@ -251,14 +252,23 @@ void clear_record()
 {
 fstream typeid_file;
 const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
+const char* readid_filename = (globalRecordFilename+".readid").c_str();
 typeid_file.open(typeid_filename);
+typeid_file.open(readid_filename);
 if(typeid_file.fail())
 {
     cout<<"can't open file "<< typeid_filename <<endl;
     exit(1);
 }
+if(readid_file.fail())
+{
+    cout<<"can't open file "<< readid_filename <<endl;
+    exit(1);
+}
 typeid_file.clear();
+readid_file.clear();
 typeid_file.close();
+readid_file.close();
 
 }
 //Insert kmers with a link to the record(readid,annotation)
