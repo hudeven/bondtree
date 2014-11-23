@@ -251,10 +251,11 @@ void batchBuild_with_duplicate(long  size)
 void clear_record()
 {
 fstream typeid_file;
+fstream readid_file;
 const char* typeid_filename = (globalRecordFilename+".typeid").c_str();
 const char* readid_filename = (globalRecordFilename+".readid").c_str();
 typeid_file.open(typeid_filename);
-typeid_file.open(readid_filename);
+readid_file.open(readid_filename);
 if(typeid_file.fail())
 {
     cout<<"can't open file "<< typeid_filename <<endl;

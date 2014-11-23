@@ -14,7 +14,7 @@ typedef int ND_tree_record_count;
 typedef int ND_tree_record;
 const int MAX_LINE_IN_SOURCE_FILE = 1000000;
 
-const int DIM = 10;
+const int DIM = 16;
 const int CNTDIM = 0; 
 
 //rest 2 are used as part of sourceData file name: sourceData32+10
