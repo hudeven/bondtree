@@ -87,7 +87,7 @@ batchBoxQuery	ndtreeHelper.h	/^void batchBoxQuery()$/;"	f	class:ndtreeHelper
 batchBuild_with_duplicate	ndtreeHelper.h	/^void batchBuild_with_duplicate(long  size)$/;"	f	class:ndtreeHelper
 batchBuild_with_duplicate_record	ndtreeHelper.h	/^void batchBuild_with_duplicate_record(long  size)$/;"	f	class:ndtreeHelper
 batchGrow_with_duplicate	ndtreeHelper.h	/^void batchGrow_with_duplicate(long skipSize, long sizeGrowTo)$/;"	f	class:ndtreeHelper
-batchRandomBoxQuery	ndtreeHelper.h	/^void batchRandomBoxQuery()$/;"	f	class:ndtreeHelper
+batchRandomBoxQuery	ndtreeHelper.h	/^void batchRandomBoxQuery(int K)$/;"	f	class:ndtreeHelper
 batchRangeQuery	ndtreeHelper.h	/^void batchRangeQuery(    )$/;"	f	class:ndtreeHelper
 binary2string	utility.cpp	/^void binary2string(const unsigned char* const ptr, int lengthInBytes, string & resultString)$/;"	f
 bit_1_count_lut	utility.h	/^const int bit_1_count_lut[] = { \/\/ 256 entries$/;"	v
@@ -190,10 +190,13 @@ lpad	utility.cpp	/^string lpad(string s, unsigned int str_len, string pad_s){$/;
 main	main.cpp	/^int main(int argc, char *argv[])$/;"	f
 makeBoxQueryData	ndtreeHelper.h	/^Dir_entry makeBoxQueryData(ifstream & query_file)$/;"	f	class:ndtreeHelper
 makeBoxQueryData_for_linearScan	ndtreeHelper.h	/^vector< vector<int> >  makeBoxQueryData_for_linearScan(ifstream & query_file)$/;"	f	class:ndtreeHelper
-makeRandomBoxQueryData	ndtreeHelper.h	/^Dir_entry makeRandomBoxQueryData(ifstream & query_file)$/;"	f	class:ndtreeHelper
+makeRandomBoxQueryData	ndtreeHelper.h	/^Dir_entry* makeRandomBoxQueryData(ifstream & query_file, int K)$/;"	f	class:ndtreeHelper
 max_block_number	ND_tree.h	/^   unsigned int max_block_number; \/\/ The maximal block number now used in the tree, always increasing, start from 0$/;"	m	class:ND_tree
 mixed_list_entry	Dir_node.h	/^   struct mixed_list_entry{$/;"	s	class:Dir_node
 moveToLine	Leaf_node.h	/^void moveToLine(fstream file, int lineNum)$/;"	f
+multipleK	multipleK.h	/^class multipleK {$/;"	c
+multipleK	multipleK.h	/^multipleK(ndtreeHelper ndtree) {$/;"	f	class:multipleK
+ndtree	multipleK.h	/^ndtreeHelper ndtree;$/;"	m	class:multipleK
 ndtreeHelper	ndtreeHelper.h	/^class ndtreeHelper {$/;"	c
 ndtreeHelper	ndtreeHelper.h	/^ndtreeHelper() {$/;"	f	class:ndtreeHelper
 not_present	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	e	enum:Error_code
@@ -267,8 +270,8 @@ string2binary	utility.cpp	/^void string2binary(const string &origString, unsigne
 string_to_int	logClass.cpp	/^int logClass::string_to_int(string s){$/;"	f	class:logClass
 string_to_int	utility.cpp	/^int string_to_int(string s){$/;"	f
 success	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	e	enum:Error_code
-tmp_DMBR_bit_lut	ndtreeHelper.h	/^int tmp_DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding bit in DMBR$/;"	m	class:ndtreeHelper
-tmp_DMBR_byte_lut	ndtreeHelper.h	/^int tmp_DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; \/\/ Given a dim and a letter, store the coresponding byte in DMBR$/;"	m	class:ndtreeHelper
+tmp_DMBR_bit_lut	ndtreeHelper.h	/^int tmp_DMBR_bit_lut[MAX_K][MAX_ALPHABET_SIZE]; \/\/changed to support mutiple K$/;"	m	class:ndtreeHelper
+tmp_DMBR_byte_lut	ndtreeHelper.h	/^int tmp_DMBR_byte_lut[MAX_K][MAX_ALPHABET_SIZE]; \/\/changed to support multiple K $/;"	m	class:ndtreeHelper
 tree_size	ND_tree.h	/^   unsigned int tree_size; \/\/ Total number of entries inserted into the tree$/;"	m	class:ND_tree
 underflow	utility.h	/^enum Error_code { duplicate_error, not_present, success, overflow, underflow, range_err, fail };$/;"	e	enum:Error_code
 update_record	Leaf_node.h	/^void update_record(int record_id)$/;"	f

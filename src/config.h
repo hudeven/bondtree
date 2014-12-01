@@ -89,9 +89,9 @@ const int enforce_minUtil_for_exhaustSplit =1;//always 1
 const int try_all_dim_with_minUtil = 1;
 
 int readid_global;
-char typeid_global;
+int typeid_global;
 
-char record_type[9999999][16]={'\0'};
+int record_type[999999][128]={0};
 
 string globalRQFilename = "rangequeryAll.txt";
 string globalDataFilename = "../data/data_random";
@@ -104,6 +104,8 @@ int debug_boxQ_leaf_accessed;
 int debug_boxQ_leaf_hit;
 int debug_boxQ_leaf_hit_peak;
 int debug_height;
+
+const int MAX_K=255; //buffer size for multiple K related array
 
 logClass logO;
 #endif

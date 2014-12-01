@@ -42,6 +42,6 @@ for seq_record in SeqIO.parse(readsFilename,"fasta"):
 	kmer_file.write(kmerStr + "\n")       
 	seqname_file.write(seq_record.name+"\n")
 	seqid_file.write(seq_record.id+"\n")
-	seqdesc_file.write("1000 "+seq_record.description+"\n");
+	seqdesc_file.write(seq_record.description+"\n");
 kmer_file.close()
 

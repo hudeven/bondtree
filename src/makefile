@@ -8,5 +8,9 @@ utility.o: utility.cpp utility.h
 	$(CC) $(CFLAGS) utility.cpp
 logClass.o: logClass.cpp logClass.h
 	$(CC) $(CFLAGS) logClass.cpp
+run:
+	./ndTree --dimension 5 --index ../data/index_real --data ../data/cancer/kmer/all.kmer --boxquery ../data/cancer/query/boxquery --skip 0 --newtree 1 --aux ../data/cancer/kmer/all.kmer.desc --record ../data/record --querydim 6
+gdb:
+	gdb --args ndTree --dimension 5 --index ../data/index_real --data ../data/cancer/kmer/all.kmer --boxquery ../data/cancer/query/boxquery --skip 0 --newtree 1 --aux ../data/cancer/kmer/all.kmer.desc --record ../data/record  --querydim 6
 clean:
 	rm -f *.o

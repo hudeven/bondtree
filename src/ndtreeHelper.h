@@ -9,6 +9,14 @@
 #include <limits.h>
 #include "config.h"
 
+class Item
+{
+public:
+	int id;
+	int count;
+};
+
+
 class ndtreeHelper {
 public:
 ofstream OutStream;
@@ -22,7 +30,9 @@ const double dir_min_util = ((nodeSplitType==ORIGINAL)||(enforce_minUtil_for_exh
 const double leaf_min_util = 0.3;
 
 int tmp_DMBR_byte_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding byte in DMBR
+//int tmp_DMBR_byte_lut[MAX_K][MAX_ALPHABET_SIZE]; //changed to support multiple K 
 int tmp_DMBR_bit_lut[DIM][MAX_ALPHABET_SIZE]; // Given a dim and a letter, store the coresponding bit in DMBR
+//int tmp_DMBR_bit_lut[MAX_K][MAX_ALPHABET_SIZE]; //changed to support mutiple K
 
 //debug_boxQ_leaf_accessed=0;
 //int debug_boxQ_leaf_hit=0;
@@ -64,30 +74,43 @@ void LocalDMBRInfoCalculation()
 
 }
 
-Dir_entry makeRandomBoxQueryData(ifstream & query_file)
+Dir_entry* makeRandomBoxQueryData(ifstream & query_file, int K, char queryK[])
 {
-    Dir_entry dirEntry;
-    for(int j = 0; j < DMBR_SIZE; j++)
-        dirEntry.DMBR[j]=0;
-    string line;
+    int queryK_length = 0;
+    Dir_entry* dirEntry = new Dir_entry[MAX_K];
+    for(int i=0; i < MAX_K; i++)
+    	for(int j = 0; j < DMBR_SIZE; j++)
+            dirEntry[i].DMBR[j]=0;
+    
+    string line[MAX_K]; // length is equal to K
 
-    for(int j=0;j<DIM;j++)
+    int byte_no,bit_no;
+    for(int i=0;i<K;i++)
     {
-        int byte_no,bit_no;
-        getline(query_file, line);
-        istringstream instr(line);
-        int v;
-        int box_size;
-        instr>>box_size;
-        for(int t=0;t<box_size;t++)
-        {
-            instr>>v;
-            byte_no = tmp_DMBR_byte_lut[j][v];
-            bit_no = tmp_DMBR_bit_lut[j][v];/** todo: here DMBR_bit_lut[j] should support enough letters **/
-            dirEntry.DMBR[byte_no] |= MASKS[bit_no];
-        }
+        getline(query_file, line[i]);
+	istringstream instr(line[i]);
+	char v;
+	instr >> v;//consume the boxsize in the head of line
+	instr >> v;//read the base 
+	queryK[i] = v;
     }
-   
+
+    for (int i=0; i <= K - DIM; i++) {
+	for(int j=0; j < DIM; j++){
+            istringstream instr(line[j+i]);
+            int v;
+            int box_size;
+            instr>>box_size;
+		
+	    for(int t=0;t<box_size;t++)
+	    {
+		instr>>v;
+		byte_no = tmp_DMBR_byte_lut[j][v];
+		bit_no = tmp_DMBR_bit_lut[j][v];/** todo: here DMBR_bit_lut[j] should support enough letters **/
+		dirEntry[i].DMBR[byte_no] |= MASKS[bit_no];
+	    }
+      }
+   }
 //Why to consume the rest lines. What are the float values? 
 /* 	
     for(int i=0;i<MAX_DIM_AND_CONTDIM-DIM;i++)
@@ -322,11 +345,14 @@ void batchBuild_with_duplicate_record(long  size)
             instr >> n;
             new_data.key[j] = n - '0';
         }
-	
-	instr_aux >> readid_global;
-	instr_aux >> typeid_global;
 
-        new_data.record_count = 1; 
+	//as the readid part hasn't been implemented
+	//I exchange this 2 lines to treat readid as typeid	
+	instr_aux >> typeid_global;
+	instr_aux >> readid_global;
+	        
+
+	new_data.record_count = 1; 
         result = ndt.insert_use_link(new_data, number_of_io);
         if(result == duplicate_error)
         {
@@ -459,8 +485,8 @@ void output_records(Leaf_entry* query_results, int query_results_size)
 	cout<<"can't open file "<<query_result_filename<<endl;
     }
 
-    unsigned char type_array[256]={'\0'};
-    unsigned char output[256]={'\0'};
+    int type_array[256]={0};
+    int output[256]={0};
     output[0]=0;
     int type_num;
     int record_id;
@@ -491,7 +517,7 @@ for(int k=0; k<query_results_size; k++)
     }
 }
  
-    query_result_file << (unsigned char)(output[0]+'0')<<" ";
+    query_result_file << output[0]<<" ";
     for(int i=1; i<=output[0]; i++)
 	query_result_file << output[i]<<" ";
     query_result_file << endl;
@@ -503,8 +529,17 @@ for(int k=0; k<query_results_size; k++)
 
 
 //output the cancer types in the query result to file
-void output_records_array(Leaf_entry* query_results, int query_results_size)
+void output_records_array(Leaf_entry query_results[MAX_K][QUERY_RESULTS_BUFFER_SIZE], int query_results_size[], char queryK[], int maxShift)
 {
+
+const int item_size = 256;
+Item item[item_size];
+for(int i=0; i<item_size; i++)
+{
+	item[i].id = -1;
+	item[i].count = 0;
+}
+
     fstream typeid_file, query_result_file;
     const char* query_result_filename = (globalBQFilename+ ".result").c_str();
     query_result_file.open(query_result_filename, fstream::in | fstream::out| fstream::app);
@@ -514,39 +549,78 @@ void output_records_array(Leaf_entry* query_results, int query_results_size)
 	cout<<"can't open file "<<query_result_filename<<endl;
     }
 
-    unsigned char type_array[256]={'\0'};
-    unsigned char output[256]={'\0'};
+    int type_array[256]={0};
+    int output[256]={0};
     output[0]=0;
     int type_num;
     int record_id;
 
-for(int k=0; k<query_results_size; k++)
-{
-    record_id = query_results[k].record;
+for(int m = 0; m <= maxShift; m++) {
+for(int k=0; k<query_results_size[m]; k++){
+    record_id = query_results[m][k].record;
     type_num = record_type[record_id][0];
     int i;
 
-    for(i=1; i<=type_num; i++)
-    {
+    for(i=1; i<=type_num; i++){
 	int p;
-	for(p=1; p<=output[0]; p++)
-	{
+	for(p=1; p<=output[0]; p++){
 	    if(record_type[record_id][i]==output[p])
 		break;
 	}
-	if(p>output[0])
-	{
+	if(p>output[0]){
 	    output[0]++;
 	    output[output[0]]=record_type[record_id][i];
+  	}
+ 
+	if(m==0) {
+	    item[i-1].id = record_type[record_id][i];
+    	    item[i-1].count = 0;
+	}else {
+	    for(int d = 0; d < item_size; d++) {
+		if(item[d].id == record_type[record_id][i]){
+		   item[d].count++;
+		   break;
+		}
+	    }
 	}
+
     }
 }
+}
+
+    int valid_read_count = 0;
+
+    for(int i = 0; i <= item_size; i++) {
+	if(item[i].count == maxShift){
+	    valid_read_count++;
+	}
+    }
+    if(valid_read_count > 0){
+	//query_result_file << valid_read_count<< " ";
+        for(int i = 0; i <= item_size; i++) {
+	    if(item[i].count == maxShift){
+	        query_result_file << item[i].id << " ";
+	    }
+        }
+        query_result_file << endl;
  
-    query_result_file << (unsigned char)(output[0]+'0')<<" ";
+        int ct = 0;
+        while(true){
+ 	    if(queryK[ct] == '\0')
+		break;
+
+        query_result_file << queryK[ct++] << " ";
+        }
+        query_result_file << endl;
+
+   }
+/*
+    query_result_file << output[0]<<" ";
     for(int i=1; i<=output[0]; i++)
 	query_result_file << output[i]<<" ";
+ 
     query_result_file << endl;
-
+*/
     typeid_file.close();
     query_result_file.close();
 
@@ -566,7 +640,7 @@ query_result_file.clear();
 query_result_file.close();
 }
 
-void batchRandomBoxQuery()
+void batchRandomBoxQuery(int K)
 {
 clear_result();
     string input=globalIndexFilename;
@@ -575,9 +649,9 @@ clear_result();
     LocalDMBRInfoCalculation();
 // box query loop in the original function
 // begins here
-    Leaf_entry query_results[QUERY_RESULTS_BUFFER_SIZE];
-    int query_results_size;
-    Dir_entry boxQueryData;
+    Leaf_entry query_results[MAX_K][QUERY_RESULTS_BUFFER_SIZE];
+    int query_results_size[MAX_K];
+    Dir_entry *boxQueryData;
 
     string query_fn=globalBQFilename;
     int num_of_points=TOTAL_BOX_QUERY_NUM;
@@ -599,21 +673,37 @@ clear_result();
    
     while(query_file.peek() != EOF){
         debug_boxQ_leaf_hit_peak=0;
-        boxQueryData = makeRandomBoxQueryData(query_file);
-        ndt.box_query(boxQueryData, query_results, query_results_size, number_of_io);
-	//calculate total record in the result
-	for(int k = 0; k < query_results_size; k++)
-		total_record_num += query_results[k].record_count;
-	
-	if(query_results_size>0)
-	{
-	   // output_records(query_results, query_results_size);
-	   output_records_array(query_results, query_results_size);
-	
+	char queryK[MAX_K] = {'\0'};
+        boxQueryData = makeRandomBoxQueryData(query_file, K, queryK);
+	int maxShift = K - DIM;
+	for(int i=0; i <= maxShift; i++) {
+	        ndt.box_query(boxQueryData[i], query_results[i], query_results_size[i], number_of_io);
 	}
+
+
+//TODO:  calculate the intersection of query_results and store the readid set to query_results[0]
+
+
+
+
+
+
+
+	//calculate total record in the result
+	for(int i=0; i <= maxShift; i++) {
+            for(int k = 0; k < query_results_size[i]; k++)
+		total_record_num += query_results[i][k].record_count;
+
+	}
+
+	// output_records(query_results, query_results_size);
+
+
         total_number_of_io += number_of_io;
-        total_results_size += query_results_size;
+        total_results_size += query_results_size[0];
         debug_boxQ_leaf_hit_for_all.push_back(debug_boxQ_leaf_hit_peak);
+
+ 	output_records_array(query_results, query_results_size, queryK, maxShift);
 
     }
 
@@ -640,6 +730,8 @@ clear_result();
     if(RUNNING_ENVIRONMENT == WINDOWS)
         system("pause");
 }
+
+
 
 void batchBoxQuery()
 {
@@ -931,5 +1023,9 @@ void display_help()
 }
 
 };
+
+
+
+
 
 #endif

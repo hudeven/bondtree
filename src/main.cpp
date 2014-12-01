@@ -6,6 +6,7 @@ struct option longopts[] = {
     { "index", required_argument, NULL,'i'},
     { "data", required_argument, NULL,'d'},
     { "boxquery", required_argument, NULL,'b'},
+    { "querydim", required_argument, NULL,'q'},
     { "rangequery", required_argument, NULL,'r'},
     { "skip", required_argument, NULL,'s'},
     { "aux", required_argument, NULL,'a'},
@@ -20,7 +21,7 @@ struct option longopts[] = {
 int main(int argc, char *argv[])
 {
 	ndtreeHelper ndtree;
-	
+	int query_dim = DIM;
 	bool newTree = false;
 	int c;
     	while((c = getopt_long(argc, argv, 
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
 		    printf("box query file name is %s.\n", optarg);
 		    globalBQFilename = optarg;
 		    break;
+		case 'q':
+		    printf("query dimension is %s.\n", optarg);
+		    query_dim = atoi(optarg);
 		case 'r':
 		    printf("range query file name is %s.\n", optarg);
 		    globalRQFilename = optarg;
@@ -83,10 +87,13 @@ int main(int argc, char *argv[])
             ndtree.batchGrow_with_duplicate(skip, LONG_MAX);
         }
         cout<<"Box query file "<<globalBQFilename<<endl;
-        ndtree.batchRandomBoxQuery();
+        
+	if(query_dim > DIM) {
+		cout << "big k search small k";
+	} else if(query_dim < DIM) {
+		cout << "small k search big k";
+	}
+	
+	ndtree.batchRandomBoxQuery(query_dim);
     
-	/*********** Range query, check it later *******************************/
-        //logO.log2File(opt.datafile.insert(0, "Range query file : ").c_str());
-        //cout<<"Range query file "<<opt.rqfile<<endl;
-        //batchRangeQuery();
 }
